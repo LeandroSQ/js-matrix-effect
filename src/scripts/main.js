@@ -15,7 +15,7 @@ class Main {
 		// Variables
 		this.dropSpawnTimer = 0;
 		this.glareSpawnTimer = 0;
-		this.grid = { columns: 0, rows: 0, drops: 0 };
+		this.grid = { columns: 0, drops: 0 };
 		this.glares = [];
 		this.horizontalColumn = 0;
 
@@ -55,10 +55,7 @@ class Main {
 		else if (remaining > this.targetFrameTime) remaining = this.targetFrameTime;
 
 		this.lastFrameTime = performance.now();
-		setTimeout(() => {
-			requestAnimationFrame(this.#onFrame.bind(this));
-		}, remaining);
-		// setTimeout(this.#onFrame.bind(this), remaining);
+		setTimeout(this.#onFrame.bind(this), remaining);
 		// requestAnimationFrame(this.onFrame.bind(this));
 	}
 
@@ -84,7 +81,6 @@ class Main {
 		// Calculate the number of columns and rows
 		const averageMetrics = FontLoader.averageMetrics(this.canvas.context);
 		this.grid.columns = Math.floor(this.canvas.width / averageMetrics.width);
-		this.grid.rows = Math.floor(this.canvas.height / averageMetrics.height);
 	}
 
 	#onVisibilityChange(event) {
