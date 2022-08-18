@@ -10,8 +10,6 @@
 	box-sizing: border-box;
 	user-select: none;
 	pointer-events: none;
-	backface-visibility: hidden;
-	-webkit-font-smoothing: subpixel-antialiased;
 	font-family: 'Matrix', 'Monospace';
 }
 
@@ -19,12 +17,20 @@ html, body {
 	width: 100vw;
 	height: 100%;
 	height: -webkit-fill-available;
-	background-color: #001c00;
+
+	background: linear-gradient(#000, #001c00);
+	background: -webkit-linear-gradient(#000, #001c00);
+	background: -moz-linear-gradient(#000, #001c00);
+	background: -o-linear-gradient(#000, #001c00);
+	background: -ms-linear-gradient(#000, #001c00);
+
 	overflow: hidden;
 }
 
 canvas {
-	-webkit-transform3d: translate(0, 0, 0);
+	/* -webkit-transform3d: translate(0, 0, 0);
 	-moz-transform3d: translate(0, 0, 0);
 	transform3d: translate(0, 0, 0);
+	backface-visibility: hidden;
+	-webkit-font-smoothing: subpixel-antialiased;*/
 }

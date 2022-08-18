@@ -23,7 +23,7 @@ class FontLoader {
 
 		ctx.font = font;
 	}
-
+	
 	/**
 	 * Calculate the width and height of a symbol
 	 *

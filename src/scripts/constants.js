@@ -74,3 +74,5 @@ export const DROP_SPAWN_INTERVAL = 0.035;
 export const DROP_BLUR_COLOR = "#0fa";
 export const DROP_TIME_TO_STACK = 0.085;
 export const DROP_TIME_TO_SWAP_SYMBOLS = 0.065;
+export const MAX_GLARE_COUNT = 14;
+export const GLARE_SPAWN_INTERVAL = 0.015;

@@ -1,13 +1,14 @@
 import { DROP_BLUR_COLOR, DROP_TIME_TO_STACK, DROP_TIME_TO_SWAP_SYMBOLS, SYMBOLS, TRAIL_LENGTH } from "./constants";
 import FontLoader from "./font-loader";
 
-const timeToSpawn = 0.075;
-const timeToSwap = 0.050;
-
 export class Drop {
 
 	constructor({ x, y }) {
-		this.position = { x, y };
+		this.position = {
+			x,
+			y,
+			z: Math.max(Math.random(), 0.65)
+		};
 		this.velocity = Math.random() * 100 + 25;
 
 		this.moveTimer = 0;
@@ -15,6 +16,11 @@ export class Drop {
 		this.swapTimer = 0;
 
 		this.letterSpacing = 0;
+
+		this.maxLength = Math.floor(Math.random() * 10 + 10);
+		this.shouldUseBlurColor = Math.random() <= 0.10;
+
+		this.overBlur = Math.random() * 7 + 1;
 
 		this.trail = [];
 	}
@@ -27,7 +33,7 @@ export class Drop {
 
 			// Add new symbol to trail
 			this.trail.unshift(this.#getRandomSymbol());
-			if (this.trail.length > TRAIL_LENGTH) this.trail.pop();
+			if (this.trail.length > this.maxLength) this.trail.pop();
 
 			// Update vertical position, falling
 			this.position.y += FontLoader.measure(null, this.trail[0])?.height ?? 0 + this.letterSpacing;
@@ -42,7 +48,9 @@ export class Drop {
 			if (Math.random() <= 0.5) {
 				this.trail[1 + Math.floor(Math.random() * this.trail.length - 2)] = this.#getRandomSymbol();
 			}
-		} else this.swapTimer += deltaTime;
+		} else if (Math.random() <= 0.5) {
+			this.swapTimer += deltaTime;
+		}
 	}
 
 	/**
@@ -77,7 +85,7 @@ export class Drop {
 		const g = Math.floor(255 * (darknessPercentage));
 		const b = Math.floor(10 * (1 - darknessPercentage));
 
-		return `rgb(${r}, ${g}, ${b})`;
+		return `rgba(${r}, ${g}, ${b}, ${this.position.z})`;
 		// return `rgba(10, 245, 10, ${darknessPercentage.toFixed(2)})`;
 	}
 
@@ -93,20 +101,23 @@ export class Drop {
 	#renderSymbol(ctx, symbol, darknessPercentage, horizontalOffset, verticalOffset, color) {
 		// Set color
 		ctx.fillStyle = color;
+		const rounds = darknessPercentage >= 0 && !this.shouldUseBlurColor && this.position.z > 0.8 ? this.overBlur : 1;
 
-		// Apply blur when symbol is light enough
-		if (darknessPercentage > 0.5) {
-			ctx.shadowColor = DROP_BLUR_COLOR;
-			ctx.shadowBlur = 10;
-		} else {
-			ctx.shadowColor = "transparent";
-			ctx.shadowBlur = 0;
+		for (let i = 0; i < rounds; i++) {
+			// Apply blur when symbol is light enough
+			if (darknessPercentage >= 0) {
+				ctx.shadowColor = this.shouldUseBlurColor ? DROP_BLUR_COLOR : color;
+				ctx.shadowBlur = 10;
+			} else {
+				ctx.shadowColor = "transparent";
+				ctx.shadowBlur = 0;
+			}
+			ctx.shadowOffsetX = 0;
+			ctx.shadowOffsetY = 0;
+
+			// Draw symbol
+			ctx.fillText(symbol, this.position.x + horizontalOffset, this.position.y + verticalOffset);
 		}
-		ctx.shadowOffsetX = 0;
-		ctx.shadowOffsetY = 0;
-
-		// Draw symbol
-		ctx.fillText(symbol, this.position.x + horizontalOffset, this.position.y + verticalOffset);
 	}
 
 }

@@ -4,9 +4,14 @@ export class DensityCanvas {
 		this.canvas = document.createElement("canvas");
 		this.virtualWidth = null;
 		this.virtualHeight = null;
+		this.enableHighDPI = false;
 	}
 
 	fullscreen() {
+		this.canvas.onfullscreenerror = (e) => {
+			console.error(e);
+		};
+
 		if (this.canvas.requestFullscreen) {
 			this.canvas.requestFullscreen();
 		} else if (this.canvas.webkitRequestFullscreen) {
@@ -17,19 +22,22 @@ export class DensityCanvas {
 	}
 
 	#getBackingStoreRatio(context) {
-		/* return (
+		if (!this.enableHighDPI) return 0.05;
+
+		return (
 			context.webkitBackingStorePixelRatio ||
 			context.mozBackingStorePixelRatio ||
 			context.msBackingStorePixelRatio ||
 			context.oBackingStorePixelRatio ||
 			context.backingStorePixelRatio ||
 			1
-		); */
-		return 1;
+		);
 	}
 
 	#getDevicePixelRation() {
-		return 1;// return window.devicePixelRatio || 1;
+		if (!this.enableHighDPI) return 0.05;
+
+		return window.devicePixelRatio || 1;
 	}
 
 	#getDrawRatio(backingStoreRatio, devicePixelRatio) {
